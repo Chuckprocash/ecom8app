@@ -3,14 +3,26 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# Install dependencies and PHP extensions in one layer
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libpq-dev libpng-dev libjpeg-dev libfreetype6-dev \
-    && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y nodejs \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_pgsql pgsql gd zip opcache \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+    git \
+    curl \
+    zip \
+    unzip \
+    libpq-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Node.js 20
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
+    && apt-get install -y nodejs
+
+# Install PHP extensions
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo_pgsql pgsql gd zip opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -18,10 +30,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy application files
 COPY . .
 
-# Install dependencies and build assets
-RUN composer install --no-dev --optimize-autoloader --no-interaction \
-    && npm ci && npm run build && npm cache clean --force \
-    && rm -rf node_modules
+# Install PHP dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Install and build frontend assets
+RUN npm ci && npm run build && npm cache clean --force && rm -rf node_modules
 
 # Configure Apache for Laravel
 RUN a2enmod rewrite \
@@ -36,7 +49,7 @@ RUN chown -R www-data:www-data /var/www/html \
 # Expose Render's dynamic port
 EXPOSE ${PORT:-80}
 
-# Runtime: Configure Apache port, run migrations, start server
+# Runtime commands
 CMD sed -i "s/Listen 80/Listen ${PORT:-80}/g" /etc/apache2/ports.conf \
     && sed -i "s/:80/:${PORT:-80}/g" /etc/apache2/sites-available/000-default.conf \
     && php artisan config:cache \
