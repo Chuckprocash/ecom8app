@@ -38,7 +38,8 @@ COPY . .
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Install and build frontend assets
-RUN npm ci && npm run build && npm cache clean --force && rm -rf node_modules
+RUN npm install --legacy-peer-deps \
+ && npm run build && npm cache clean --force && rm -rf node_modules
 
 # Configure Apache for Laravel
 RUN a2enmod rewrite \
