@@ -3,7 +3,7 @@ FROM php:8.2-apache
 
 WORKDIR /var/www/html
 
-# Install system dependencies
+# Install system dependencies (added libwebp-dev and libonig-dev)
 RUN apt-get update && apt-get install -y \
     git \
     curl \
@@ -13,6 +13,10 @@ RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
+    libwebp-dev \
+    libxpm-dev \
+    libzip-dev \
+    libonig-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -20,9 +24,9 @@ RUN apt-get update && apt-get install -y \
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs
 
-# Install PHP extensions
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo_pgsql pgsql gd zip opcache
+# Install PHP extensions (fixed GD configuration)
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install -j$(nproc) pdo_pgsql pgsql gd zip opcache
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
