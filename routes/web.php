@@ -53,12 +53,23 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function(){
+    //admin Login
     Route::get('login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
     Route::post('login', [AdminAuthController::class, 'login'])->name('admin.post.login');
-// Route::get('/admin/users', [AdminController::class, 'users']);
-// Route::resource('admin/posts', PostController::class);
+    //Application admin initialize
+    Route::get('register-with-key', [AdminAuthController::class, 'createPrimaryAdmin'])
+    ->name('registerKeyAdmin');
 });
-    
+
+
+
+Route::group(['prefix' => 'admin'], function(){
+
+    //admin  register routes
+    Route::get('register', [AdminAuthController::class, 'create'])
+    ->name('registerAdmin');
+    Route::post('register', [AdminAuthController::class, 'store']);
+});
 
 
 
