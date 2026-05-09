@@ -92,6 +92,7 @@
                     </div>
                     <div>
                         <label for="brand" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">brand</label>
+                        <span v-if="form.errors.brand_id">{{ form.errors.brand_id }}</span>
                         <select v-model="form.brand_id" id="brand" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option disabled selected value="">Select brand</option>
                             <option v-for="brand in brands" :key="brand.id" :value="brand.id">{{brand.name}}</option>
@@ -104,6 +105,7 @@
                     </div>
                     <div>
                         <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Category</label>
+                        <span v-if="form.errors.category_id">{{ form.errors.category_id }}</span>
                         <select v-model="form.category_id" id="category" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
                             <option disabled selected value="">Select category</option>
                             <option v-for="category in categories" :key="category.id" :value="category.id">{{category.name}}</option>

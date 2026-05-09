@@ -103,17 +103,17 @@ import { Link } from '@inertiajs/vue3'
                 >
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/admin/brands"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                  >Brands</a
+                  >Brands</Link
                 >
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/admin/category"
                   class="flex items-center p-2 pl-11 w-full text-base font-medium text-gray-900 rounded-lg transition duration-75 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700"
-                  >Category</a
+                  >Category</Link
                 >
               </li>
             </ul>

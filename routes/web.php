@@ -10,6 +10,8 @@ use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\ProductListsController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\ProductImagesController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\BrandsController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -64,11 +66,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function(){
 
 
 Route::group(['prefix' => 'admin'], function(){
-
     //admin  register routes
     Route::get('register', [AdminAuthController::class, 'create'])
     ->name('registerAdmin');
     Route::post('register', [AdminAuthController::class, 'store']);
+    Route::resource('category', CategoryController::class);
+    Route::resource('brands', BrandsController::class);
 });
 
 
