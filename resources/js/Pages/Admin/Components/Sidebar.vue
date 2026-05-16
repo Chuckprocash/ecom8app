@@ -124,8 +124,8 @@ import { Link } from '@inertiajs/vue3'
           class="pt-5 mt-5 space-y-2 border-t border-gray-200 dark:border-gray-700"
         >
           <li>
-            <a
-              href="#"
+            <Link
+              :href="route('admin.sales.index')"
               class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg transition duration-75 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white group"
             >
               <svg
@@ -143,7 +143,7 @@ import { Link } from '@inertiajs/vue3'
                 ></path>
               </svg>
               <span class="ml-3">sales</span>
-            </a>
+            </Link>
           </li>
         </ul>
 

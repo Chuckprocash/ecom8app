@@ -15,7 +15,6 @@ class CheckoutController extends Controller
 {
     
     public function store(Request $request) {
-        // dd($request->products);
         
         $products = $request->products;
         $checkoutList = [];
@@ -34,7 +33,7 @@ class CheckoutController extends Controller
 
         //dd($checkoutList);
 
-        $stripe = new \Stripe\StripeClient(env('STRIPE_API_KEY'));
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
         $checkout_session = $stripe->checkout->sessions->create([
             'line_items' => $checkoutList,
@@ -82,18 +81,17 @@ class CheckoutController extends Controller
             $cartItem = Cart_item::where('product_id', $item['product_id'])->where('user_id', $user->id)->first();
             $cartItem->delete();
         }
-
-        //create payment database
         $paymentData = [
             'order_id' => $order->id,
             'amount' => $request->total,
             'status' => 'pending',
             'type' => 'stripe',
-            'created_by' => $user->id,
-            'updated_by' => $user->id,
+            'created_by' => $request->user()->id,
+            'updated_by' => $request->user()->id,
         ];
 
         Payment::create($paymentData);
+
         DB::commit(); // everything succeeded, make it permanent
 
         }catch (\Exception $e) {
@@ -102,7 +100,7 @@ class CheckoutController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
         //redirect to stripe 
-        
+        // return redirect()->back();
         return Inertia::location($checkout_session->url);
 
     }
@@ -111,7 +109,7 @@ class CheckoutController extends Controller
     //
     public function stripeSuccess(Request $request){
         //
-        \Stripe\Stripe::setApiKey(env('STRIPE_API_KEY'));
+        \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
         $sessionId = $request->get('session_id');
         
         try{
@@ -136,6 +134,7 @@ class CheckoutController extends Controller
     }
     public function stripeCancel(){
         //
+        return redirect()->route('dashboard');
     }
 
     public function checkoutForOrder(Request $request, Order $order) {
@@ -152,7 +151,7 @@ class CheckoutController extends Controller
         }
 
         try {
-            \Stripe\Stripe::setApiKey(env('STRIPE_API_KEY'));
+            \Stripe\Stripe::setApiKey(env('STRIPE_SECRET'));
 
             $orderItems = $order->order_items()->with('product')->get();
 
@@ -173,7 +172,7 @@ class CheckoutController extends Controller
             $checkout_session = \Stripe\Checkout\Session::create([
                 'line_items'  => $checkoutList,
                 'mode'        => 'payment',
-                'success_url' => route('checkout.success') . '?session_id={CHECKOUT_SESSION_ID}',
+                'success_url' => route('checkout.success').'?session_id={CHECKOUT_SESSION_ID}',
                 'cancel_url'  => route('checkout.cancel'),
             ]);
 

@@ -12,7 +12,8 @@ console.log(props.orders)
 </script>
 <template>
     <Layout>
-        <pre>you have orders</pre>
+        <!-- <pre>you have orders</pre> -->
+        <h2>Your Orders</h2>
         <OrderTable v-for="order in orders" :order="order"/>
     </Layout>
 </template>

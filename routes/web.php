@@ -12,6 +12,7 @@ use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\ProductImagesController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\BrandsController;
+use App\Http\Controllers\StripeWebhookController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/product_images/{image}', [ProductImagesController::class, 'destroy'])->name('admin.product_images.delete');
     Route::post('/products/{product}/images', [ProductImagesController::class, 'store'])->name('admin.product_images.store');
     
+    Route::get('/dashboard/sales', [AdminController::class, 'salesIndex'])->name('admin.sales.index');
 });
 
 Route::group(['prefix' => 'admin', 'middleware' => 'redirectAdmin'], function(){
@@ -74,6 +76,9 @@ Route::group(['prefix' => 'admin'], function(){
     Route::resource('brands', BrandsController::class);
 });
 
+
+// Webhook route (must be outside web middleware group)
+Route::post('/webhook/stripe', [StripeWebhookController::class, 'handleWebhook']);
 
 
 //Authentication Routes login, registration, logout...

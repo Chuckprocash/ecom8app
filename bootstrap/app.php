@@ -23,6 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => AdminMiddleware::class,
             'redirectAdmin' => RedirectAdmin::class,
         ]);
+        
+        // Exclude Stripe webhook from CSRF protection
+        $middleware->validateCsrfTokens(except: [
+            'webhook/stripe',
+        ]);
 
         //
     })
